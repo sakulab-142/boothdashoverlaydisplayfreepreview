@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-color: #ffffff;
+            --font-main: 'Noto Sans JP', sans-serif;
+        }
+        body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--font-main); color: white; background: transparent; }
+        .game-frame { position: absolute; top: 40px; left: 40px; width: 1400px; height: 787.5px; border: 4px solid var(--main-color); box-shadow: 0 0 15px var(--main-color); }
+        .comment-area { position: absolute; top: 40px; right: 40px; width: 400px; height: 940px; background: rgba(0,0,0,0.6); border-left: 4px solid var(--main-color); }
+        .info-bar { position: absolute; bottom: 110px; left: 40px; display: flex; gap: 15px; }
+        .badge { background: var(--main-color); color: #000; padding: 5px 20px; font-weight: bold; border-radius: 4px; font-size: 24px; }
+        .ticker-container { position: absolute; bottom: 40px; left: 40px; width: 1400px; height: 60px; background: rgba(0,0,0,0.7); overflow: hidden; display: flex; align-items: center; border-bottom: 2px solid var(--main-color); }
+        .ticker-text { white-space: nowrap; font-size: 28px; padding-left: 100%; animation: scroll 20s linear infinite; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+    </style>
+</head>
+<body>
+    <div class="game-frame"></div>
+    <div class="comment-area"></div>
+    <div class="info-bar"><div id="disp-tw" class="badge"></div><div id="disp-hs" class="badge"></div></div>
+    <div class="ticker-container"><div id="disp-ticker" class="ticker-text"></div></div>
+
+    <script>
+        function update() {
+            const raw = localStorage.getItem('stream_lite_config');
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            document.documentElement.style.setProperty('--main-color', data.colorMain);
+            document.documentElement.style.setProperty('--font-main', data.selectedFont);
+            document.getElementById('disp-tw').innerText = data.twitter || '';
+            document.getElementById('disp-hs').innerText = data.hashtag || '';
+            const ticker = document.getElementById('disp-ticker');
+            if (ticker.innerText !== data.ticker) { ticker.innerText = data.ticker || ''; }
+        }
+        window.addEventListener('storage', update);
+        window.onload = update;
+    </script>
+</body>
+</html>
